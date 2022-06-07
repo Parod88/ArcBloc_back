@@ -1,0 +1,22 @@
+{
+  "name": "datark_back",
+  "version": "1.0.0",
+  "description": "Backend for datark project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Parod88/Datark_back.git"
+  },
+  "author": "Pablo Rodríguez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Parod88/Datark_back/issues"
+  },
+  "homepage": "https://github.com/Parod88/Datark_back#readme",
+  "dependencies": {
+    "express-generator": "^4.16.1"
+  }
+}
