@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Architect {
+  id                  Int      @id @unique @default(autoincrement())
+  name                String   @db.VarChar(255)
+  last_name           String   @db.VarChar(255)
+  dateOf_birth        DateTime @db.Date()
+  // id_nationality Int      @relation(fields: [], references: [])
+  //id_current_studio   Int      @relation(id_studio, FKstudio)
+  //id_previous_studios Int
+  //id_projects         Int      @relation()
+  //id_contact
+  //current_location
+  signed_up           Boolean  @default(false)
+  signed_in           Boolean  @default(false)
+  typeOf_subscription Int      @db.UnsignedInt
+}
+
+model User {
+  id                  Int                    @id @unique @default(autoincrement())
+  email               String                 @unique @db.VarChar(255)
+  password            String                 @db.VarChar(255)
+  name                String                 @db.VarChar(255)
+  last_name           String                 @db.VarChar(255)
+  phone_number        Int                    @unique @db.UnsignedInt
+  location            Unsupported("polygon")
+  is_architect        Boolean                @default(false)
+  is_client           Boolean                @default(false)
+  //projects
+  typeOf_subscription Int                    @db.UnsignedInt
+}
+
+model Projects {
+  id            Int                    @id @unique @default(autoincrement())
+  name          String                 @db.VarChar(255)
+  //id_architect Int @map(Architect, id)
+  //id_clients Int @relation(map: "Architect", id)
+  //id_studio Int @relation()
+  //id_typeOf_project Int @relation()
+  //id_stateOf_project Int @relation()
+  //id_plot Int @relation()
+  yearOf_start  Int                    @db.Year
+  yearOf_finish Int                    @db.Year
+  location      Unsupported("polygon")
+}
