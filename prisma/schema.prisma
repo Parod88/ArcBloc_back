@@ -11,24 +11,52 @@ datasource db {
 }
 
 model Architect {
-  id                  Int                    @id @unique @default(autoincrement())
-  name                String                 @db.VarChar(255)
-  last_name           String                 @db.VarChar(255)
-  dateOf_birth        DateTime               @db.Date()
-  id_nationality      Nationality            @relation(fields: [nationality_id], references: [id])
-  nationality_id      Int
-  //id_current_studio   Int      @relation(id_studio, FKstudio)
+  id                   Int                    @id @unique @default(autoincrement()) @db.UnsignedInt
+  name                 String                 @db.VarChar(255)
+  last_name            String                 @db.VarChar(255)
+  dateOf_birth         DateTime               @db.Date()
+  nationality_id       Nationality            @relation(fields: [id_nationality], references: [id])
+  id_nationality       Int                    @db.UnsignedInt
+  studio_id            Studio                 @relation(fields: [id_studio], references: [id])
+  id_studio            Int                    @db.UnsignedInt
   //id_previous_studios Int
   //id_projects         Int      @relation()
   //id_contact
-  location            Unsupported("polygon")
-  signed_up           Boolean                @default(false)
-  signed_in           Boolean                @default(false)
-  typeOf_subscription Int                    @db.UnsignedInt
+  location             Unsupported("polygon")
+  signed_up            Boolean                @default(false)
+  signed_in            Boolean                @default(false)
+  typeOf_subscription  Int                    @db.UnsignedInt
+  ArchitectsOnProjects ArchitectsOnProjects[]
+}
+
+model ArchitectsOnProjects {
+  projects_id   Projects  @relation(fields: [id_projects], references: [id])
+  id_projects   Int       @db.UnsignedInt
+  architects_id Architect @relation(fields: [id_architects], references: [id])
+  id_architects Int       @db.UnsignedInt
+
+  @@id([id_projects, id_architects])
+}
+
+model Projects {
+  id                   Int                    @id @unique @default(autoincrement()) @db.UnsignedInt
+  name                 String                 @db.VarChar(255)
+  //id_architect Int @map(Architect, id)
+  //id_clients Int @relation(map: "Architect", id)
+  studio_id            Studio                 @relation(fields: [id_studio], references: [id])
+  id_studio            Int                    @db.UnsignedInt
+  //id_typeOf_project Int @relation()
+  //id_stateOf_project Int @relation()
+  plot                 Plot                   @relation(fields: [id_plot], references: [id])
+  id_plot              Int                    @unique @db.UnsignedInt
+  yearOf_start         Int                    @db.Year
+  yearOf_finish        Int                    @db.Year
+  location             Unsupported("polygon")
+  ArchitectsOnProjects ArchitectsOnProjects[]
 }
 
 model User {
-  id                  Int                    @id @unique @default(autoincrement())
+  id                  Int                    @id @unique @default(autoincrement()) @db.UnsignedInt
   email               String                 @unique @db.VarChar(255)
   password            String                 @db.VarChar(255)
   name                String                 @db.VarChar(255)
@@ -41,29 +69,24 @@ model User {
   typeOf_subscription Int                    @db.UnsignedInt
 }
 
-model Projects {
-  id            Int                    @id @unique @default(autoincrement())
-  name          String                 @db.VarChar(255)
-  //id_architect Int @map(Architect, id)
-  //id_clients Int @relation(map: "Architect", id)
-  //id_studio Int @relation()
-  //id_typeOf_project Int @relation()
-  //id_stateOf_project Int @relation()
-  //id_plot Int @relation()
-  yearOf_start  Int                    @db.Year
-  yearOf_finish Int                    @db.Year
-  location      Unsupported("polygon")
+model Studio {
+  id   Int    @id @unique @default(autoincrement()) @db.UnsignedInt
+  name String @db.VarChar(255)
+
+  Architect Architect[]
+  Projects  Projects[]
 }
 
 model Plot {
-  id_plot             Int                    @id @unique @default(autoincrement())
+  id                  Int                    @id @unique @default(autoincrement()) @db.UnsignedInt
   cadastral_reference String                 @unique @db.VarChar(20)
   location            Unsupported("polygon")
   surface             Int
+  project             Projects?
 }
 
 model Nationality {
-  id        Int         @id @unique @default(autoincrement())
+  id        Int         @id @unique @default(autoincrement()) @db.UnsignedInt
   country   String      @db.VarChar(255)
   Architect Architect[]
 }
