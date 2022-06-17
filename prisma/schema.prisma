@@ -11,19 +11,20 @@ datasource db {
 }
 
 model Architect {
-  id                  Int      @id @unique @default(autoincrement())
-  name                String   @db.VarChar(255)
-  last_name           String   @db.VarChar(255)
-  dateOf_birth        DateTime @db.Date()
-  // id_nationality Int      @relation(fields: [], references: [])
+  id                  Int                    @id @unique @default(autoincrement())
+  name                String                 @db.VarChar(255)
+  last_name           String                 @db.VarChar(255)
+  dateOf_birth        DateTime               @db.Date()
+  id_nationality      Nationality            @relation(fields: [nationality_id], references: [id])
+  nationality_id      Int
   //id_current_studio   Int      @relation(id_studio, FKstudio)
   //id_previous_studios Int
   //id_projects         Int      @relation()
   //id_contact
-  //current_location
-  signed_up           Boolean  @default(false)
-  signed_in           Boolean  @default(false)
-  typeOf_subscription Int      @db.UnsignedInt
+  location            Unsupported("polygon")
+  signed_up           Boolean                @default(false)
+  signed_in           Boolean                @default(false)
+  typeOf_subscription Int                    @db.UnsignedInt
 }
 
 model User {
@@ -52,4 +53,17 @@ model Projects {
   yearOf_start  Int                    @db.Year
   yearOf_finish Int                    @db.Year
   location      Unsupported("polygon")
+}
+
+model Plot {
+  id_plot             Int                    @id @unique @default(autoincrement())
+  cadastral_reference String                 @unique @db.VarChar(20)
+  location            Unsupported("polygon")
+  surface             Int
+}
+
+model Nationality {
+  id        Int         @id @unique @default(autoincrement())
+  country   String      @db.VarChar(255)
+  Architect Architect[]
 }
