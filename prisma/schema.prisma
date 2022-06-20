@@ -65,7 +65,7 @@ model User {
   is_architect        Boolean  @default(false)
   is_client           Boolean  @default(false)
   //projects
-  typeOf_subscription Int      @db.UnsignedInt
+  typeOf_subscription Int      @default(0) @db.UnsignedInt
 }
 
 model Studio {

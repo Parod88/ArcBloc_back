@@ -63,16 +63,10 @@ const signIn = async (req, res, next) => {
 };
 
 const deleteUser = async (req, res, next) => {
-  const { email } = req.body;
   const { userId } = req.params;
-  const user = await prisma.user.findUnique({
-    where: { email: `${email}` } || { id: Number(userId) },
-  });
   try {
     const userToDelete = await prisma.user.delete({
-      where: {
-        email,
-      } || { id: Number(userId) },
+      where: { id: Number(userId) },
     });
     res.status(201).json(userToDelete);
   } catch (error) {
