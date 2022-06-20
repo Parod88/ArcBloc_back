@@ -1,6 +1,5 @@
 "use strict";
 
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
@@ -8,6 +7,7 @@ const prisma = new PrismaClient();
 const hashPassword = function (password) {
   return bcrypt.hashSync(password, 8);
 };
+
 const signIn = async (req, res, next) => {
   const {
     email,
@@ -62,6 +62,29 @@ const signIn = async (req, res, next) => {
   }
 };
 
+const deleteUser = async (req, res, next) => {
+  const { email } = req.body;
+  const { userId } = req.params;
+  const user = await prisma.user.findUnique({
+    where: { email: `${email}` } || { id: Number(userId) },
+  });
+  try {
+    const userToDelete = await prisma.user.delete({
+      where: {
+        email,
+      } || { id: Number(userId) },
+    });
+    res.status(201).json(userToDelete);
+  } catch (error) {
+    res.status(400).json({
+      info: "User could not be deleted",
+      message: `${error}`,
+    });
+    next(error);
+  }
+};
+
 module.exports = {
   signIn,
+  deleteUser,
 };
