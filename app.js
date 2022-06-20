@@ -27,6 +27,7 @@ app.use("/", require("./routes/index"));
 
 // Api routers
 app.use("/api/v1/user", require("./routes/api/v1/users"));
+app.use("/api/v1/signUp", require("./routes/api/v1/signup"));
 
 //==================================================================
 //Errors
