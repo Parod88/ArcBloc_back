@@ -20,9 +20,9 @@ model Architect {
   studio_id            Studio                 @relation(fields: [id_studio], references: [id])
   id_studio            Int                    @db.UnsignedInt
   //id_previous_studios Int
-  //id_projects         Int      @relation()
   //id_contact
-  location             Unsupported("polygon")
+  location_id          Location               @relation(fields: [location], references: [id])
+  location             Int                    @db.UnsignedInt
   signed_up            Boolean                @default(false)
   signed_in            Boolean                @default(false)
   typeOf_subscription  Int                    @db.UnsignedInt
@@ -41,7 +41,6 @@ model ArchitectsOnProjects {
 model Projects {
   id                   Int                    @id @unique @default(autoincrement()) @db.UnsignedInt
   name                 String                 @db.VarChar(255)
-  //id_architect Int @map(Architect, id)
   //id_clients Int @relation(map: "Architect", id)
   studio_id            Studio                 @relation(fields: [id_studio], references: [id])
   id_studio            Int                    @db.UnsignedInt
@@ -51,37 +50,39 @@ model Projects {
   id_plot              Int                    @unique @db.UnsignedInt
   yearOf_start         Int                    @db.Year
   yearOf_finish        Int                    @db.Year
-  location             Unsupported("polygon")
   ArchitectsOnProjects ArchitectsOnProjects[]
 }
 
 model User {
-  id                  Int                    @id @unique @default(autoincrement()) @db.UnsignedInt
-  email               String                 @unique @db.VarChar(255)
-  password            String                 @db.VarChar(255)
-  name                String                 @db.VarChar(255)
-  last_name           String                 @db.VarChar(255)
-  phone_number        Int                    @unique @db.UnsignedInt
-  location            Unsupported("polygon")
-  is_architect        Boolean                @default(false)
-  is_client           Boolean                @default(false)
+  id                  Int      @id @unique @default(autoincrement()) @db.UnsignedInt
+  email               String   @unique @db.VarChar(255)
+  password            String   @db.VarChar(255)
+  name                String   @db.VarChar(255)
+  last_name           String   @db.VarChar(255)
+  phone_number        Int      @unique @db.UnsignedInt
+  location_id         Location @relation(fields: [location], references: [id])
+  location            Int      @db.UnsignedInt
+  is_architect        Boolean  @default(false)
+  is_client           Boolean  @default(false)
   //projects
-  typeOf_subscription Int                    @db.UnsignedInt
+  typeOf_subscription Int      @db.UnsignedInt
 }
 
 model Studio {
-  id   Int    @id @unique @default(autoincrement()) @db.UnsignedInt
-  name String @db.VarChar(255)
-
-  Architect Architect[]
-  Projects  Projects[]
+  id          Int         @id @unique @default(autoincrement()) @db.UnsignedInt
+  name        String      @db.VarChar(255)
+  location_id Location    @relation(fields: [location], references: [id])
+  location    Int         @db.UnsignedInt
+  Architect   Architect[]
+  Projects    Projects[]
 }
 
 model Plot {
   id                  Int                    @id @unique @default(autoincrement()) @db.UnsignedInt
   cadastral_reference String                 @unique @db.VarChar(20)
   location            Unsupported("polygon")
-  surface             Int
+  surface             Int                    @db.UnsignedInt
+  occupation          Int
   project             Projects?
 }
 
@@ -89,4 +90,12 @@ model Nationality {
   id        Int         @id @unique @default(autoincrement()) @db.UnsignedInt
   country   String      @db.VarChar(255)
   Architect Architect[]
+}
+
+model Location {
+  id        Int         @id @unique @default(autoincrement()) @db.UnsignedInt
+  city      String
+  User      User[]
+  Architect Architect[]
+  Studio    Studio[]
 }
