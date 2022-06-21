@@ -63,11 +63,21 @@ const signIn = async (req, res, next) => {
 };
 
 const deleteUser = async (req, res, next) => {
+  const comparePassword = (unHashedPassword, hashedPassword) =>
+    bcrypt.compare(unHashedPassword, hashedPassword);
+
   const { userId } = req.params;
+  const { email, password } = req.body;
   try {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user || !comparePassword(password, user.password)) {
+      res.status(401).json({ error: "Invalid credentials" });
+      return;
+    }
     const userToDelete = await prisma.user.delete({
       where: { id: Number(userId) },
     });
+
     res.status(201).json(userToDelete);
   } catch (error) {
     res.status(400).json({
