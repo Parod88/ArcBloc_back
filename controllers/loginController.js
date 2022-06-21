@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const comparePassword = (unHashedPassword, hashedPassword) =>
   bcrypt.compare(unHashedPassword, hashedPassword);
@@ -13,7 +13,7 @@ const signUp = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user || !comparePassword(password, user.password)) {
-      res.status(401).json({ error: "Invalid credentials" });
+      res.status(401).json({ error: 'Invalid credentials' });
       return;
     }
     console.log(user.password, password);
@@ -22,7 +22,7 @@ const signUp = async (req, res, next) => {
       { email },
       process.env.JWT_SECRET,
       {
-        expiresIn: "480m",
+        expiresIn: '480m',
       },
       (error, jwtToken) => {
         if (error) {
@@ -34,7 +34,7 @@ const signUp = async (req, res, next) => {
     );
   } catch (error) {
     res.status(500).send({
-      info: "An error occurred.",
+      info: 'An error occurred.',
       message: `${error}`,
       query: req.body,
     });
