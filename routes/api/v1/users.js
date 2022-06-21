@@ -2,6 +2,7 @@
 
 const express = require("express");
 const router = express.Router();
+const isAuth = require("../../../middlewares/auth.js");
 const {
   signIn,
   deleteUser,
@@ -9,6 +10,6 @@ const {
 
 // /user
 router.post("/signIn", signIn);
-router.delete("/deleteUser/:userId", deleteUser);
+router.delete("/deleteUser/:userId", isAuth, deleteUser);
 
 module.exports = router;
