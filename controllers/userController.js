@@ -65,7 +65,6 @@ const signIn = async (req, res, next) => {
 const deleteUser = async (req, res, next) => {
   const comparePassword = (unHashedPassword, hashedPassword) =>
     bcrypt.compare(unHashedPassword, hashedPassword);
-
   const { userId } = req.params;
   const { email, password } = req.body;
   try {
